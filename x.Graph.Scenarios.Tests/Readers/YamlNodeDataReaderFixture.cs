@@ -1,0 +1,40 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace x.Graph.Scenarios.Tests.Readers
+{
+    public class YamlNodeDataReaderFixture
+    {
+        [TestFixture(typeof(double))]
+        public class ReadString<T>
+        {
+            [Datapoints]
+            public DataFileWrapper<double>[] DataFilesOfDouble = new[]
+                {
+                  new DataFileWrapper<double>(1)
+                };
+
+            [Theory]
+            public void Returns_Dictionary_Of_Node_Data(DataFileWrapper<T> dataFile)
+            {
+                //Arrange
+                var fileData = x.Graph.Scenarios.Files.DataProvider.GetNodeData<T>(dataFile.Id);
+                var reader = dataFile.GetNodeReader();
+
+                //Act    
+                var data = reader.ReadString(fileData);
+
+                //Assert
+                Assert.NotNull(data);
+
+                var maxKey = (data.Keys.Select(k => k)).Max();
+
+                Assert.AreEqual(data.Count, maxKey + 1);
+            }
+        }
+    }
+}

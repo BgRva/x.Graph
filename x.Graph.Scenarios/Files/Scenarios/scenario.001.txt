@@ -1,0 +1,31 @@
+﻿---
+id: 1
+description: 
+node-count: 4 
+edge-count: 4
+
+nodes:
+    - id:    0
+      
+    - id:    1
+      
+    - id:    2
+      
+    - id:    3
+      
+edges:
+    - id:         0
+      source-id:  0
+      target-id:  1
+      
+    - id:         1
+      source-id:  0
+      target-id:  2
+      
+    - id:         2
+      source-id:  1
+      target-id:  3
+      
+    - id:         3
+      source-id:  2
+      target-id:  3	 
