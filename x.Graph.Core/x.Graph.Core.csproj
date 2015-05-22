@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Default\Edge.cs" />
+    <Compile Include="Default\Graph.cs" />
+    <Compile Include="Default\Node.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IEdge.cs" />
     <Compile Include="IGraph.cs" />
