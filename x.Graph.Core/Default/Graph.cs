@@ -75,7 +75,7 @@ namespace x.Graph.Core.Default
         /// <returns>INode Object</returns>
         public INode<T> AddNode(T uniqueId)
         {
-            INode<T> newNode = new Node<T>();
+            INode<T> newNode = new Node<T>(uniqueId);
             _Nodes.Add(uniqueId, newNode);
             return newNode;
         }
