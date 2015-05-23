@@ -20,7 +20,7 @@ namespace x.Graph.Core
         void RemoveAllEdges(T fromUniqueId, T toUniqueId);
 
         IEnumerable<INode<T>> Nodes { get; }
-        IEnumerable<IEdge<T>> Edges { get; }
+        IEnumerable<List<IEdge<T>>> Edges { get; }
 
         IEnumerable<INode<T>> TraverseBF(T uniqueId);
         IEnumerable<INode<T>> TraverseDF(T uniqueId);
@@ -31,8 +31,8 @@ namespace x.Graph.Core
         INode<T> this[T uniqueId] { get; }
 
 
-        IEdge<T> GetEdge(T srcId, T targId);
-        IEdge<T> this[T srcId, T targId] { get; }
+        List<IEdge<T>> GetEdge(T srcId, T targId);
+        List<IEdge<T>> this[T srcId, T targId] { get; }
 
         int NodeCount { get; }
         int EdgeCount { get; }
