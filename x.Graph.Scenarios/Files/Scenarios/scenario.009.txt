@@ -1,0 +1,43 @@
+﻿---
+id: 9
+description: a ring with one cycle
+node-count: 6 
+edge-count: 6
+
+nodes:
+    - id:    0
+      
+    - id:    1
+      
+    - id:    2
+      
+    - id:    3
+      
+    - id:    4
+      
+    - id:    5
+      
+edges:
+    - id:         0
+      source-id:  0
+      target-id:  1
+      
+    - id:         1
+      source-id:  1
+      target-id:  2
+      
+    - id:         2
+      source-id:  2
+      target-id:  3
+      
+    - id:         3
+      source-id:  3
+      target-id:  4	 
+            
+    - id:         4
+      source-id:  4
+      target-id:  5	 
+            
+    - id:         5
+      source-id:  5
+      target-id:  0	 

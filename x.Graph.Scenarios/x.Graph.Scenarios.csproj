@@ -67,6 +67,14 @@
     <Content Include="Files\Data\node.001.double.txt" />
     <Content Include="Files\ReadMe.txt" />
     <Content Include="Files\Scenarios\scenario.001.txt" />
+    <Content Include="Files\Scenarios\scenario.002.txt" />
+    <Content Include="Files\Scenarios\scenario.003.txt" />
+    <Content Include="Files\Scenarios\scenario.004.txt" />
+    <Content Include="Files\Scenarios\scenario.005.txt" />
+    <Content Include="Files\Scenarios\scenario.006.txt" />
+    <Content Include="Files\Scenarios\scenario.007.txt" />
+    <Content Include="Files\Scenarios\scenario.008.txt" />
+    <Content Include="Files\Scenarios\scenario.009.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
