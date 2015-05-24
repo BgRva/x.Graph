@@ -17,7 +17,8 @@ namespace x.Graph.Core.Default
         private IDictionary<T, INode<T>> _Nodes;
 
         /// <summary>
-        /// Treat Graph object indexing as a retrieval for nodes.
+        /// Treat Graph object indexing as a retrieval for nodes. If Graph object does not
+        /// contain node with the given unique id, null is returned.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be retrieved.</param>
         /// <returns>INode Object</returns>
@@ -25,12 +26,16 @@ namespace x.Graph.Core.Default
         {
             get
             {
+                if (!_Nodes.ContainsKey(uniqueId))
+                    return null;
+
                 return _Nodes[uniqueId];
             }
         }
 
         /// <summary>
-        /// Returns a Node object for the given unique id.
+        /// Returns a Node object for the given unique id. If Graph object does not
+        /// contain node with the given unique id, null is returned.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be retrieved.</param>
         /// <returns>INode Object</returns>
@@ -76,22 +81,24 @@ namespace x.Graph.Core.Default
         /// <returns>INode Object</returns>
         public INode<T> AddNode(T uniqueId)
         {
-            // Need to test if node isn't already in the Graph object.
+            if (_Nodes.ContainsKey(uniqueId))
+                throw new ArgumentException("Graph already contains node with unique ID " + uniqueId.ToString() + ".");
+
             INode<T> newNode = new Node<T>(uniqueId);
-            //TODO:  should we catch the exception thrown when the uniqueId is already in use and throw a custom exception?
-            //See: https://msdn.microsoft.com/en-us/library/k7z0zy8k%28v=vs.110%29.aspx for the exceptions thrown. If
-            // we just let these exceptions bubble up then it exposes the underlying implementation, to which the user should
-            // be agnostic.  This would apply in other methods like GetNode(id) where id was not found.
             _Nodes.Add(uniqueId, newNode);
             return newNode;
         }
 
         /// <summary>
-        /// Removes a node from the Graph object with the given unique id.
+        /// Removes a node from the Graph object with the given unique id. If graph does not
+        /// contain the node with the given unique idm then ignore.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be added.</param>
         public void RemoveNode(T uniqueId)
         {
+            if (!_Nodes.ContainsKey(uniqueId))
+                return;
+
             _Nodes.Remove(uniqueId);
         }
         #endregion
@@ -102,7 +109,8 @@ namespace x.Graph.Core.Default
         private IDictionary<Tuple<T,T>, List<IEdge<T>>> _Edges;
 
         /// <summary>
-        /// Treat Graph object square indexing as a retrieval for edges.
+        /// Treat Graph object square indexing as a retrieval for edges. If graph does
+        /// not contain either nodes or an edge between the given nodes, return null.
         /// </summary>
         /// <param name="srcId">The unique ID of the source node.</param>
         /// <param name="targId">The unique ID of the sink node.</param>
@@ -111,7 +119,15 @@ namespace x.Graph.Core.Default
         {
             get
             {
-                return _Edges[new Tuple<T, T>(srcId, targId)];
+                if (!_Nodes.ContainsKey(srcId) || !_Nodes.ContainsKey(targId))
+                    return null;
+
+                Tuple<T, T> pair = new Tuple<T, T>(srcId, targId);
+
+                if (!_Edges.ContainsKey(pair))
+                    return null;
+
+                return _Edges[pair];
             }
         }
 
@@ -163,14 +179,14 @@ namespace x.Graph.Core.Default
         public IEdge<T> AddEdge(T fromUniqueId, T toUniqueId)
         {
             // Do we wish to throw an error for non-existant nodes or create the nodes and edge?
-            if (!_Nodes.Keys.Contains(fromUniqueId))
-                throw new Exception("Graph does not contain a node with unique ID of " + fromUniqueId.ToString() + ".");
-            else if  (!_Nodes.Keys.Contains(toUniqueId))
-                throw new Exception("Graph does not contain a node with unique ID of " + toUniqueId.ToString() + ".");
+            if (!_Nodes.ContainsKey(fromUniqueId))
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + fromUniqueId.ToString() + ".");
+            else if  (!_Nodes.ContainsKey(toUniqueId))
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + toUniqueId.ToString() + ".");
 
             Tuple<T, T> pair = new Tuple<T, T>(fromUniqueId, toUniqueId);
             IEdge<T> newEdge = new Edge<T>(_Nodes[fromUniqueId], _Nodes[toUniqueId]);
-            if (_Edges.Keys.Contains(pair))
+            if (_Edges.ContainsKey(pair))
                 _Edges[pair].Add(newEdge);
             else
                 _Edges.Add(pair, new List<IEdge<T>>() { newEdge });
@@ -187,14 +203,14 @@ namespace x.Graph.Core.Default
         public IEdge<T> AddEdge(INode<T> srce, INode<T> target)
         {
             // Do we wish to throw an error for non-existant nodes or create the nodes and edge?
-            if (!_Nodes.Keys.Contains(srce.UniqueId))
-                throw new Exception("Graph does not contain a node with unique ID of " + srce.UniqueId.ToString() + ".");
-            else if (!_Nodes.Keys.Contains(target.UniqueId))
-                throw new Exception("Graph does not contain a node with unique ID of " + target.UniqueId.ToString() + ".");
+            if (!_Nodes.ContainsKey(srce.UniqueId))
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + srce.UniqueId.ToString() + ".");
+            else if (!_Nodes.ContainsKey(target.UniqueId))
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + target.UniqueId.ToString() + ".");
 
             Tuple<T, T> pair = new Tuple<T, T>(srce.UniqueId, target.UniqueId);
             IEdge<T> newEdge = new Edge<T>(srce, target);
-            if (_Edges.Keys.Contains(pair))
+            if (_Edges.ContainsKey(pair))
                 _Edges[pair].Add(newEdge);
             else
                 _Edges.Add(pair, new List<IEdge<T>>() { newEdge });
