@@ -61,10 +61,10 @@ namespace x.Graph.Core.Default
             }
         }
 
-        // Not sure yet how to implement this. Might only be viable for
+        //TODO:  Not sure yet how to implement this. Might only be viable for
         // a particular kind of type such as int where we can increment.
         public INode<T> AddNode()
-        {
+        {            
             throw new NotImplementedException();
         }
 
@@ -78,6 +78,10 @@ namespace x.Graph.Core.Default
         {
             // Need to test if node isn't already in the Graph object.
             INode<T> newNode = new Node<T>(uniqueId);
+            //TODO:  should we catch the exception thrown when the uniqueId is already in use and throw a custom exception?
+            //See: https://msdn.microsoft.com/en-us/library/k7z0zy8k%28v=vs.110%29.aspx for the exceptions thrown. If
+            // we just let these exceptions bubble up then it exposes the underlying implementation, to which the user should
+            // be agnostic.  This would apply in other methods like GetNode(id) where id was not found.
             _Nodes.Add(uniqueId, newNode);
             return newNode;
         }

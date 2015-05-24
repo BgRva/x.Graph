@@ -6,8 +6,8 @@ namespace x.Graph.Core.Default
     public class Node<T> : INode<T>
     {
         /// <summary>
-        /// Node must be given a unique id in order to be constructed.
-        /// (Note: should we allow ids to be modifiable?)
+        /// Node must be given a unique id in order to be constructed.  The
+        /// unique id is immutable for a given node
         /// </summary>
         /// <param name="uniqueId">Unique id for new node.</param>
         public Node(T uniqueId)
@@ -25,7 +25,7 @@ namespace x.Graph.Core.Default
             }
         }
 
-        public System.Collections.Generic.IEnumerable<IEdge<T>> IncomingEdges
+        public IEnumerable<IEdge<T>> IncomingEdges
         {
             get
             {
@@ -33,7 +33,7 @@ namespace x.Graph.Core.Default
             }
         }
 
-        public System.Collections.Generic.IEnumerable<IEdge<T>> OutgoingEdges
+        public IEnumerable<IEdge<T>> OutgoingEdges
         {
             get
             {
@@ -41,7 +41,7 @@ namespace x.Graph.Core.Default
             }
         }
 
-        public System.Collections.Generic.IEnumerable<INode<T>> Predecessors
+        public IEnumerable<INode<T>> Predecessors
         {
             get
             {
@@ -49,7 +49,7 @@ namespace x.Graph.Core.Default
             }
         }
 
-        public System.Collections.Generic.IEnumerable<IEdge<T>> SelfLoops
+        public IEnumerable<IEdge<T>> SelfLoops
         {
             get
             {
@@ -57,7 +57,7 @@ namespace x.Graph.Core.Default
             }
         }
 
-        public System.Collections.Generic.IEnumerable<INode<T>> Successors
+        public IEnumerable<INode<T>> Successors
         {
             get
             {
