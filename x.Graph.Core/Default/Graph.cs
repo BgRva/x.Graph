@@ -17,8 +17,8 @@ namespace x.Graph.Core.Default
         private IDictionary<T, INode<T>> _Nodes;
 
         /// <summary>
-        /// Treat Graph object indexing as a retrieval for nodes. If Graph object does not
-        /// contain node with the given unique id, null is returned.
+        /// Returns the node with the specified <paramref name="uniqueId"/>. If the
+        /// Graph does not contain a node with the given unique id, null is returned.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be retrieved.</param>
         /// <returns>INode Object</returns>
@@ -26,10 +26,12 @@ namespace x.Graph.Core.Default
         {
             get
             {
-                if (!_Nodes.ContainsKey(uniqueId))
-                    return null;
-
-                return _Nodes[uniqueId];
+                INode<T> node = null;
+                if (_Nodes.TryGetValue(uniqueId, out node))
+                {
+                    return node;
+                }
+                return null;
             }
         }
 
@@ -82,7 +84,7 @@ namespace x.Graph.Core.Default
         public INode<T> AddNode(T uniqueId)
         {
             if (_Nodes.ContainsKey(uniqueId))
-                throw new ArgumentException("Graph already contains node with unique ID " + uniqueId.ToString() + ".");
+                throw new ArgumentException("Graph already contains node with unique ID " + uniqueId.ToString() + ".", "uniqueId");
 
             INode<T> newNode = new Node<T>(uniqueId);
             _Nodes.Add(uniqueId, newNode);
@@ -91,15 +93,16 @@ namespace x.Graph.Core.Default
 
         /// <summary>
         /// Removes a node from the Graph object with the given unique id. If graph does not
-        /// contain the node with the given unique idm then ignore.
+        /// contain the node with the given unique id then no action is taken.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be added.</param>
         public void RemoveNode(T uniqueId)
         {
-            if (!_Nodes.ContainsKey(uniqueId))
-                return;
-
-            _Nodes.Remove(uniqueId);
+            if(_Nodes.Remove(uniqueId))
+            {
+                //TODO need to handle removal of all edges inbound or outbound
+                // to the node being removed
+            }
         }
         #endregion
 
@@ -171,18 +174,19 @@ namespace x.Graph.Core.Default
 
         /// <summary>
         /// Adds a new edge. If an edge already exists in the Graph object for the given source
-        /// and sink node, then add a parallel edge.
+        /// and sink node, then add a parallel edge.  If <paramref name="fromUniqueId"/> and/or 
+        /// <paramref name="toUniqueId"/> do not correspond to a node in the graph, an 
+        /// ArgumentException will be thrown.
         /// </summary>
         /// <param name="fromUniqueId">The unique ID of the source node.</param>
         /// <param name="toUniqueId">The unique ID of the sink node.</param>
         /// <returns>IEdge Object</returns>
         public IEdge<T> AddEdge(T fromUniqueId, T toUniqueId)
         {
-            // Do we wish to throw an error for non-existant nodes or create the nodes and edge?
             if (!_Nodes.ContainsKey(fromUniqueId))
-                throw new ArgumentException("Graph does not contain a node with unique ID of " + fromUniqueId.ToString() + ".");
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + fromUniqueId.ToString() + ".", "fromUniqueId");
             else if  (!_Nodes.ContainsKey(toUniqueId))
-                throw new ArgumentException("Graph does not contain a node with unique ID of " + toUniqueId.ToString() + ".");
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + toUniqueId.ToString() + ".", "toUniqueId");
 
             Tuple<T, T> pair = new Tuple<T, T>(fromUniqueId, toUniqueId);
             IEdge<T> newEdge = new Edge<T>(_Nodes[fromUniqueId], _Nodes[toUniqueId]);
@@ -195,18 +199,19 @@ namespace x.Graph.Core.Default
 
         /// <summary>
         /// Adds a new edge. If an edge already exists in the Graph object for the given source
-        /// and sink node, then add a parallel edge.
+        /// and sink node, then add a parallel edge.  If <paramref name="srce"/> and/or 
+        /// <paramref name="target"/> nodes do not exist in the graph, an 
+        /// ArgumentException will be thrown.
         /// </summary>
         /// <param name="srce">The source INode object.</param>
         /// <param name="target">The sink INode object.</param>
         /// <returns>IEdge Object</returns>
         public IEdge<T> AddEdge(INode<T> srce, INode<T> target)
         {
-            // Do we wish to throw an error for non-existant nodes or create the nodes and edge?
             if (!_Nodes.ContainsKey(srce.UniqueId))
-                throw new ArgumentException("Graph does not contain a node with unique ID of " + srce.UniqueId.ToString() + ".");
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + srce.UniqueId.ToString() + ".", "srce");
             else if (!_Nodes.ContainsKey(target.UniqueId))
-                throw new ArgumentException("Graph does not contain a node with unique ID of " + target.UniqueId.ToString() + ".");
+                throw new ArgumentException("Graph does not contain a node with unique ID of " + target.UniqueId.ToString() + ".", "target");
 
             Tuple<T, T> pair = new Tuple<T, T>(srce.UniqueId, target.UniqueId);
             IEdge<T> newEdge = new Edge<T>(srce, target);
