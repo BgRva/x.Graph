@@ -93,15 +93,26 @@ namespace x.Graph.Core.Default
 
         /// <summary>
         /// Removes a node from the Graph object with the given unique id. If graph does not
-        /// contain the node with the given unique id then no action is taken.
+        /// contain the node with the given unique id then no action is taken.  If the node
+        /// has edges that it is a part of, remove all those edges from graph as well.
         /// </summary>
         /// <param name="uniqueId">Unique ID of node to be added.</param>
         public void RemoveNode(T uniqueId)
         {
-            if(_Nodes.Remove(uniqueId))
+            if (_Nodes.ContainsKey(uniqueId))
             {
-                //TODO need to handle removal of all edges inbound or outbound
-                // to the node being removed
+                INode<T> nodeToRemove = _Nodes[uniqueId];
+
+                foreach (IEdge<T> edge in nodeToRemove.IncomingEdges)
+                    this.RemoveAllEdges(edge.Source.UniqueId, uniqueId);
+
+                foreach (IEdge<T> edge in nodeToRemove.OutgoingEdges)
+                    this.RemoveAllEdges(uniqueId, edge.Sink.UniqueId);
+
+                if (nodeToRemove.SelfLoops != null)
+                    this.RemoveAllEdges(uniqueId, uniqueId);
+
+                _Nodes.Remove(uniqueId);
             }
         }
         #endregion
@@ -193,7 +204,16 @@ namespace x.Graph.Core.Default
             if (_Edges.ContainsKey(pair))
                 _Edges[pair].Add(newEdge);
             else
+            {
                 _Edges.Add(pair, new List<IEdge<T>>() { newEdge });
+                if (!fromUniqueId.Equals(toUniqueId))
+                {
+                    _Nodes[fromUniqueId].AddOutgoingEdge(newEdge);
+                    _Nodes[toUniqueId].AddIncomingEdge(newEdge);
+                }
+                else
+                    _Nodes[fromUniqueId].AddSelfLoop(newEdge);
+            }
             return newEdge;
         }
 
