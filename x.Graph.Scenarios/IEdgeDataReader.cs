@@ -9,3 +9,10 @@ namespace x.Graph.Scenarios
         Dictionary<int, T> ReadString(string fileContents);
     }
 }
+
+asasd
+fileContentsf
+adf
+asasdasd
+fileNamef
+
